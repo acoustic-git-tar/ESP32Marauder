@@ -378,6 +378,17 @@ void CommandLine::runCommand(String input) {
             wifi_scan_obj.StartScan(WIFI_ATTACK_DEAUTH_MANUAL, TFT_RED);            
           }
         }
+        else if (attack_Type == ATTACK_TYPE_ET) {
+            if (!this->apSelected()) {
+              Serial.println("You don't have any targets selected. Use " + (String)SEL_CMD);
+              return;
+            }
+          Serial.println("Starting Evil Twin access point. Stop with " + (String)STOPAP_CMD);
+          #ifdef HAS_SCREEN
+            display_obj.clearScreen();
+            menu_function_obj.drawStatusBar();
+          #endif
+        }
         // Beacon
         else if (attack_type == ATTACK_TYPE_BEACON) {
           // spam by list
