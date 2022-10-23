@@ -165,6 +165,28 @@ void CommandLine::runCommand(String input) {
       menu_function_obj.changeMenu(menu_function_obj.current_menu);
     #endif
   }
+    // shut down server and stop AP
+  if (cmd_args.get(0) == STOPAP_CMD) {
+    if (wifi_scan_obj.currentScanMode == OTA_UPDATE) {
+      wifi_scan_obj.currentScanMode = WIFI_SCAN_OFF;
+      //#ifdef HAS_SCREEN
+      //  menu_function_obj.changeMenu(menu_function_obj.updateMenu.parentMenu);
+      //#endif
+      WiFi.softAPdisconnect(true);
+      web_obj.shutdownServer();
+      return;
+    }
+  
+  wifi_scan_obj.StartScan(WIFI_SCAN_OFF);
+
+  Serial.println("Stopping AP");
+
+  // If we don't do this, the text and button coordinates will be off
+  #ifdef HAS_SCREEN
+    display_obj.tft.init();
+    menu_function_obj.changeMenu(menu_function_obj.current_menu);
+  #endif
+}
   // Channel command
   else if (cmd_args.get(0) == CH_CMD) {
     // Search for channel set arg
@@ -334,6 +356,7 @@ void CommandLine::runCommand(String input) {
       int ap_beacon_sw = this->argSearch(&cmd_args, "-a");
       int src_addr_sw = this->argSearch(&cmd_args, "-s");
       int dst_addr_sw = this->argSearch(&cmd_args, "-d");
+      int wpa_pwd = this->argSearch(&cmd_args, "-p");
   
       if (attack_type_switch == -1) {
         Serial.println("You must specify an attack type");
@@ -378,17 +401,7 @@ void CommandLine::runCommand(String input) {
             wifi_scan_obj.StartScan(WIFI_ATTACK_DEAUTH_MANUAL, TFT_RED);            
           }
         }
-        else if (attack_Type == ATTACK_TYPE_ET) {
-            if (!this->apSelected()) {
-              Serial.println("You don't have any targets selected. Use " + (String)SEL_CMD);
-              return;
-            }
-          Serial.println("Starting Evil Twin access point. Stop with " + (String)STOPAP_CMD);
-          #ifdef HAS_SCREEN
-            display_obj.clearScreen();
-            menu_function_obj.drawStatusBar();
-          #endif
-        }
+
         // Beacon
         else if (attack_type == ATTACK_TYPE_BEACON) {
           // spam by list
@@ -449,6 +462,18 @@ void CommandLine::runCommand(String input) {
             menu_function_obj.drawStatusBar();
           #endif
           wifi_scan_obj.StartScan(WIFI_ATTACK_RICK_ROLL, TFT_YELLOW);
+        }
+        else if (attack_type == ATTACK_TYPE_ET) {
+            if (!this->apSelected()) {
+              Serial.println("You don't have any targets selected. Use " + (String)SEL_CMD);
+              return;
+            }
+          Serial.println("Starting Evil Twin access point. Stop with " + (String)STOPAP_CMD);
+          wifi_scan_obj.StartScan(WIFI_ATTACK_EVIL_TWIN, TFT_RED);
+          #ifdef HAS_SCREEN
+            display_obj.clearScreen();
+            menu_function_obj.drawStatusBar();
+          #endif
         }
         else {
           Serial.println("Attack type not properly defined");

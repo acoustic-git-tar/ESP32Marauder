@@ -46,7 +46,7 @@ const char PROGMEM SNIFF_ESP_CMD[] = "sniffesp";
 const char PROGMEM SNIFF_DEAUTH_CMD[] = "sniffdeauth";
 const char PROGMEM SNIFF_PMKID_CMD[] = "sniffpmkid";
 const char PROGMEM STOPSCAN_CMD[] = "stopscan";
-const char PROGMEM STOPAP_CMD[] = "stopap"
+const char PROGMEM STOPAP_CMD[] = "stopap";
 
 // WiFi attack
 const char PROGMEM ATTACK_CMD[] = "attack";
@@ -88,7 +88,7 @@ const char PROGMEM HELP_SNIFF_PMKID_CMD[] = "sniffpmkid [-c <channel>]";
 const char PROGMEM HELP_STOPSCAN_CMD[] = "stopscan";
 
 // WiFi attack
-const char PROGMEM HELP_ATTACK_CMD[] = "attack -t <beacon [-l/-r/-a]/deauth [-s <src mac>] [-d <dst mac>]/probe/rickroll/eviltwin>";
+const char PROGMEM HELP_ATTACK_CMD[] = "attack -t <beacon [-l/-r/-a]/deauth [-s <src mac>] [-d <dst mac>]/probe/rickroll/eviltwin> [-p <Wi-Fi passphrase> (for evil twin attack)]";
 
 // WiFi Aux
 const char PROGMEM HELP_LIST_AP_CMD_A[] = "list -s";

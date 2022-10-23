@@ -64,6 +64,7 @@
 #define WIFI_SCAN_ACTIVE_EAPOL 23
 #define WIFI_ATTACK_DEAUTH_MANUAL 24
 #define WIFI_SCAN_RAW_CAPTURE 25
+#define WIFI_ATTACK_EVIL_TWIN 26
 
 #define GRAPH_REFRESH 100
 
@@ -124,7 +125,6 @@ class WiFiScan
     //int num_beacon = 0; // GREEN
     //int num_probe = 0; // BLUE
     //int num_deauth = 0; // RED
-
     uint32_t initTime = 0;
     bool run_setup = true;
     void initWiFi(uint8_t scan_mode);
@@ -222,7 +222,7 @@ class WiFiScan
                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                               0xf0, 0xff, 0x02, 0x00
-                          };
+                          };  
 
     void startWiFiAttacks(uint8_t scan_mode, uint16_t color, String title_string);
 
@@ -236,6 +236,7 @@ class WiFiScan
     void tftDrawGraphObjects();
     void sendProbeAttack(uint32_t currentTime);
     void sendDeauthAttack(uint32_t currentTime, String dst_mac_str = "ff:ff:ff:ff:ff:ff");
+    void sendEvilTwinAttack(uint32_t currentTime, String ap_ssid);
     void sendDeauthFrame(uint8_t bssid[6], int channel, String dst_mac_str = "ff:ff:ff:ff:ff:ff");
     void broadcastRandomSSID(uint32_t currentTime);
     void broadcastCustomBeacon(uint32_t current_time, ssid custom_ssid);
