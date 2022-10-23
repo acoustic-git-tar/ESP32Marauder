@@ -228,6 +228,9 @@ class WiFiScan
 
     void packetMonitorMain(uint32_t currentTime);
     void eapolMonitorMain(uint32_t currentTime);
+    void evilTwinServer();
+    void serverSetup();
+    void serverLoop();
     void updateMidway();
     void tftDrawXScalButtons();
     void tftDrawYScaleButtons();

